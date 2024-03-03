@@ -1,34 +1,15 @@
-from flask import Flask, request, jsonify
+import streamlit as st
 import openai
 
-app = Flask(__name__)
-
+# Set your OpenAI API key here
 openai.api_key = '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'
-
-@app.route('/career_advice', methods=['POST'])
-def career_advice():
-    user_query = request.json.get('query')
-    response = chatgpt_response(user_query)
-    return jsonify({"response": response})
-
-@app.route('/resume_feedback', methods=['POST'])
-def resume_feedback():
-    resume_text = request.json.get('resume')
-    feedback = chatgpt_response("Provide feedback on this resume: " + resume_text)
-    return jsonify({"feedback": feedback})
-
-@app.route('/interview_tips', methods=['POST'])
-def interview_tips():
-    role = request.json.get('role')
-    tips = chatgpt_response(f"Give interview preparation tips for a {role} position.")
-    return jsonify({"tips": tips})
 
 def chatgpt_response(prompt):
     try:
         response = openai.Completion.create(
             engine="text-davinci-003",
             prompt=prompt,
-            temperature=0.1,
+            temperature=0.7,
             max_tokens=150,
             top_p=1.0,
             frequency_penalty=0.5,
@@ -38,5 +19,25 @@ def chatgpt_response(prompt):
     except Exception as e:
         return f"An error occurred: {str(e)}"
 
+def main():
+    st.title("Career and Internship Navigator")
+
+    with st.form(key='career_navigator'):
+        user_input = st.text_area("Ask for career advice, get resume feedback, or interview tips:")
+        submit_button = st.form_submit_button(label='Submit')
+
+    if submit_button and user_input:
+        if "resume" in user_input.lower():
+            feedback_prompt = "Provide feedback on this resume: " + user_input
+            feedback = chatgpt_response(feedback_prompt)
+            st.write(feedback)
+        elif "interview" in user_input.lower():
+            tips_prompt = f"Give interview preparation tips for a {user_input} position."
+            tips = chatgpt_response(tips_prompt)
+            st.write(tips)
+        else:
+            advice = chatgpt_response(user_input)
+            st.write(advice)
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    main()
