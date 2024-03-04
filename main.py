@@ -26,7 +26,7 @@ def chatgpt_response(prompt):
     except Exception as e:
         return f"An error occurred: {str(e)}"
 
-st.title("Career and Internship Navigator")
+st.title("Husky Boost: Career & Internship Navigator")
 
 with st.form(key='career_navigator'):
     user_input = st.text_area("Ask for career advice, get resume feedback, or interview tips:")
