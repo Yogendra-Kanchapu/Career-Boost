@@ -1,5 +1,5 @@
 import streamlit as st
-from openai import OpenAI
+import openai
 
 # Set your OpenAI API key here
 openai.api_key = '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'
@@ -39,5 +39,3 @@ def main():
             advice = chatgpt_response(user_input)
             st.write(advice)
 
-if __name__ == '__main__':
-    main()
